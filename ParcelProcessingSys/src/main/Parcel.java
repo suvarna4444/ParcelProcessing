@@ -8,6 +8,8 @@ public class Parcel {
     private double width;
     private double height;
     private boolean isCollected;
+
+    // Constructor
     public Parcel(String parcelID, int daysInDepot, double weight, double length, double width, double height) {
         this.parcelID = parcelID;
         this.daysInDepot = daysInDepot;
@@ -18,6 +20,7 @@ public class Parcel {
         this.isCollected = false;
     }
 
+    // Getters and Setters
     public String getParcelID() {
         return parcelID;
     }
@@ -49,9 +52,13 @@ public class Parcel {
     public void setCollected(boolean isCollected) {
         this.isCollected = isCollected;
     }
+
+    // Method to calculate the volume of the parcel
     public double calculateVolume() {
         return length * width * height;
     }
+
+    // Method to represent the parcel as a string
     @Override
     public String toString() {
         return "Parcel ID: " + parcelID + ", Days in Depot: " + daysInDepot + ", Weight: " + weight + "kg, Dimensions: " 
