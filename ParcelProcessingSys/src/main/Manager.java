@@ -20,7 +20,6 @@ public class Manager {
     private JButton processButton;
     private JLabel statusBar;
 
-    // Constructor
     public Manager() {
         this.customerQueue = new QueueOfCustomers();
         this.parcelMap = new ParcelMap();
@@ -29,7 +28,6 @@ public class Manager {
         createGUI();
     }
 
-    // Method to initialize parcels from a file
     public void initializeParcels(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -53,7 +51,6 @@ public class Manager {
         }
     }
 
-    // Method to initialize customers from a file
     public void initializeCustomers(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -74,7 +71,6 @@ public class Manager {
         }
     }
 
-    // Method to start processing customers
     public void startProcessing() {
         if (!customerQueue.isEmpty()) {
             Customer customer = customerQueue.removeCustomer();
@@ -90,40 +86,41 @@ public class Manager {
         log.writeLogToFile("log.txt");
     }
 
-    // Method to create GUI components
     private void createGUI() {
         frame = new JFrame("Parcel Depot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 600);
+        frame.setSize(1200, 700);
         frame.setLayout(new BorderLayout());
 
-        // Parcel Panel
         parcelTextArea = new JTextArea();
         parcelTextArea.setEditable(false);
+        parcelTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        parcelTextArea.setMargin(new Insets(10, 10, 10, 10));
         JScrollPane parcelScrollPane = new JScrollPane(parcelTextArea);
         parcelScrollPane.setBorder(BorderFactory.createTitledBorder("Parcels"));
 
-        // Customer Panel
         customerTextArea = new JTextArea();
         customerTextArea.setEditable(false);
+        customerTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        customerTextArea.setMargin(new Insets(10, 10, 10, 10));
         JScrollPane customerScrollPane = new JScrollPane(customerTextArea);
         customerScrollPane.setBorder(BorderFactory.createTitledBorder("Customers"));
 
-        // Current Parcel Panel
         currentParcelTextArea = new JTextArea();
         currentParcelTextArea.setEditable(false);
+        currentParcelTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        currentParcelTextArea.setMargin(new Insets(10, 10, 10, 10));
         JScrollPane currentParcelScrollPane = new JScrollPane(currentParcelTextArea);
         currentParcelScrollPane.setBorder(BorderFactory.createTitledBorder("Current Parcel"));
 
-        // Split panes for better layout management
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parcelScrollPane, customerScrollPane);
-        splitPane1.setDividerLocation(500);
+        splitPane1.setDividerLocation(400);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, currentParcelScrollPane);
-        splitPane2.setDividerLocation(750);
+        splitPane2.setDividerLocation(800);
 
-        // Process Button
         processButton = new JButton("Process Next Customer");
         processButton.setToolTipText("Click to process the next customer in the queue");
+        processButton.setFont(new Font("Arial", Font.BOLD, 14));
         processButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,9 +128,9 @@ public class Manager {
             }
         });
 
-        // Add Parcel Form
         JPanel parcelFormPanel = new JPanel();
-        parcelFormPanel.setLayout(new GridLayout(7, 2));
+        parcelFormPanel.setLayout(new GridLayout(7, 2, 10, 10));
+        parcelFormPanel.setBorder(BorderFactory.createTitledBorder("Add Parcel"));
         JTextField parcelIDField = new JTextField();
         JTextField daysInDepotField = new JTextField();
         JTextField weightField = new JTextField();
@@ -142,76 +139,95 @@ public class Manager {
         JTextField heightField = new JTextField();
 
         JButton addParcelButton = new JButton("Add Parcel");
+        addParcelButton.setFont(new Font("Arial", Font.BOLD, 14));
         addParcelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String parcelID = parcelIDField.getText();
-                int daysInDepot = Integer.parseInt(daysInDepotField.getText());
-                double weight = Double.parseDouble(weightField.getText());
-                double length = Double.parseDouble(lengthField.getText());
-                double width = Double.parseDouble(widthField.getText());
-                double height = Double.parseDouble(heightField.getText());
+                try {
+                    String parcelID = parcelIDField.getText();
+                    int daysInDepot = Integer.parseInt(daysInDepotField.getText());
+                    double weight = Double.parseDouble(weightField.getText());
+                    double length = Double.parseDouble(lengthField.getText());
+                    double width = Double.parseDouble(widthField.getText());
+                    double height = Double.parseDouble(heightField.getText());
 
-                Parcel parcel = new Parcel(parcelID, daysInDepot, weight, length, width, height);
-                parcelMap.addParcel(parcel);
-                updateParcelTextArea();
+                    Parcel parcel = new Parcel(parcelID, daysInDepot, weight, length, width, height);
+                    parcelMap.addParcel(parcel);
+                    updateParcelTextArea();
+                    parcelIDField.setText("");
+                    daysInDepotField.setText("");
+                    weightField.setText("");
+                    lengthField.setText("");
+                    widthField.setText("");
+                    heightField.setText("");
+                } catch (NumberFormatException ex) {
+                    updateStatusBar("Error: Please enter valid numeric values.");
+                }
             }
         });
 
-        parcelFormPanel.add(new JLabel("Parcel ID"));
+        parcelFormPanel.add(new JLabel("Parcel ID:"));
         parcelFormPanel.add(parcelIDField);
-        parcelFormPanel.add(new JLabel("Days in Depot"));
+        parcelFormPanel.add(new JLabel("Days in Depot:"));
         parcelFormPanel.add(daysInDepotField);
-        parcelFormPanel.add(new JLabel("Weight"));
+        parcelFormPanel.add(new JLabel("Weight:"));
         parcelFormPanel.add(weightField);
-        parcelFormPanel.add(new JLabel("Length"));
+        parcelFormPanel.add(new JLabel("Length:"));
         parcelFormPanel.add(lengthField);
-        parcelFormPanel.add(new JLabel("Width"));
+        parcelFormPanel.add(new JLabel("Width:"));
         parcelFormPanel.add(widthField);
-        parcelFormPanel.add(new JLabel("Height"));
+        parcelFormPanel.add(new JLabel("Height:"));
         parcelFormPanel.add(heightField);
+        parcelFormPanel.add(new JLabel(""));
         parcelFormPanel.add(addParcelButton);
 
-        // Add Customer Form
         JPanel customerFormPanel = new JPanel();
-        customerFormPanel.setLayout(new GridLayout(4, 2));
+        customerFormPanel.setLayout(new GridLayout(4, 2, 10, 10));
+        customerFormPanel.setBorder(BorderFactory.createTitledBorder("Add Customer"));
         JTextField queueNumberField = new JTextField();
         JTextField customerNameField = new JTextField();
         JTextField parcelIDForCustomerField = new JTextField();
 
         JButton addCustomerButton = new JButton("Add Customer");
+        addCustomerButton.setFont(new Font("Arial", Font.BOLD, 14));
         addCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int queueNumber = Integer.parseInt(queueNumberField.getText());
-                String name = customerNameField.getText();
-                String parcelID = parcelIDForCustomerField.getText();
+                try {
+                    int queueNumber = Integer.parseInt(queueNumberField.getText());
+                    String name = customerNameField.getText();
+                    String parcelID = parcelIDForCustomerField.getText();
 
-                Customer customer = new Customer(queueNumber, name, parcelID);
-                customerQueue.addCustomer(customer);
-                updateCustomerTextArea();
+                    Customer customer = new Customer(queueNumber, name, parcelID);
+                    customerQueue.addCustomer(customer);
+                    updateCustomerTextArea();
+                    queueNumberField.setText("");
+                    customerNameField.setText("");
+                    parcelIDForCustomerField.setText("");
+                } catch (NumberFormatException ex) {
+                    updateStatusBar("Error: Please enter valid numeric values.");
+                }
             }
         });
 
-        customerFormPanel.add(new JLabel("Queue Number"));
+        customerFormPanel.add(new JLabel("Queue Number:"));
         customerFormPanel.add(queueNumberField);
-        customerFormPanel.add(new JLabel("Customer Name"));
+        customerFormPanel.add(new JLabel("Customer Name:"));
         customerFormPanel.add(customerNameField);
-        customerFormPanel.add(new JLabel("Parcel ID"));
+        customerFormPanel.add(new JLabel("Parcel ID:"));
         customerFormPanel.add(parcelIDForCustomerField);
+        customerFormPanel.add(new JLabel(""));
         customerFormPanel.add(addCustomerButton);
 
-        // Status Bar
         statusBar = new JLabel("Ready");
         statusBar.setBorder(BorderFactory.createEtchedBorder());
+        statusBar.setFont(new Font("Arial", Font.ITALIC, 12));
 
-        // Buttons Panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(processButton);
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.add(processButton, BorderLayout.NORTH);
 
-        // Adding Components to Frame
-        frame.add(splitPane2, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.NORTH);
+        frame.add(splitPane2, BorderLayout.CENTER);
         frame.add(statusBar, BorderLayout.SOUTH);
         frame.add(parcelFormPanel, BorderLayout.WEST);
         frame.add(customerFormPanel, BorderLayout.EAST);
@@ -219,17 +235,14 @@ public class Manager {
         frame.setVisible(true);
     }
 
-    // Method to update parcel text area
     private void updateParcelTextArea() {
         parcelTextArea.setText(parcelMap.toString());
     }
 
-    // Method to update customer text area
     private void updateCustomerTextArea() {
         customerTextArea.setText(customerQueue.toString());
     }
 
-    // Method to update status bar
     private void updateStatusBar(String message) {
         statusBar.setText(message);
     }
