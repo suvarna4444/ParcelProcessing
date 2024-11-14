@@ -92,6 +92,29 @@ public class Manager {
         frame.setSize(1200, 700);
         frame.setLayout(new BorderLayout());
 
+        // Menu Bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem loadParcels = new JMenuItem("Load Parcels");
+        loadParcels.addActionListener(e -> initializeParcels("parcels.txt"));
+        JMenuItem loadCustomers = new JMenuItem("Load Customers");
+        loadCustomers.addActionListener(e -> initializeCustomers("customers.txt"));
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(e -> System.exit(0));
+        fileMenu.add(loadParcels);
+        fileMenu.add(loadCustomers);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+        menuBar.add(fileMenu);
+
+        JMenu helpMenu = new JMenu("Help");
+        JMenuItem aboutItem = new JMenuItem("About");
+        aboutItem.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Parcel Depot System v1.0", "About", JOptionPane.INFORMATION_MESSAGE));
+        helpMenu.add(aboutItem);
+        menuBar.add(helpMenu);
+
+        frame.setJMenuBar(menuBar);
+
         parcelTextArea = new JTextArea();
         parcelTextArea.setEditable(false);
         parcelTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -121,6 +144,7 @@ public class Manager {
         processButton = new JButton("Process Next Customer");
         processButton.setToolTipText("Click to process the next customer in the queue");
         processButton.setFont(new Font("Arial", Font.BOLD, 14));
+        processButton.setIcon(new ImageIcon("icons/process.png"));  // Assuming you have an icon named process.png
         processButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +164,7 @@ public class Manager {
 
         JButton addParcelButton = new JButton("Add Parcel");
         addParcelButton.setFont(new Font("Arial", Font.BOLD, 14));
+        addParcelButton.setIcon(new ImageIcon("icons/add.png"));  // Assuming you have an icon named add.png
         addParcelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -190,6 +215,7 @@ public class Manager {
 
         JButton addCustomerButton = new JButton("Add Customer");
         addCustomerButton.setFont(new Font("Arial", Font.BOLD, 14));
+        addCustomerButton.setIcon(new ImageIcon("icons/add.png"));  // Assuming you have an icon named add.png
         addCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,19 +245,22 @@ public class Manager {
         customerFormPanel.add(new JLabel(""));
         customerFormPanel.add(addCustomerButton);
 
-        statusBar = new JLabel("Ready");
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridLayout(1, 2, 20, 0));
+        formPanel.add(parcelFormPanel);
+        formPanel.add(customerFormPanel);
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(splitPane2, BorderLayout.CENTER);
+        centerPanel.add(processButton, BorderLayout.SOUTH);
+
+        statusBar = new JLabel("Status: Ready");
         statusBar.setBorder(BorderFactory.createEtchedBorder());
-        statusBar.setFont(new Font("Arial", Font.ITALIC, 12));
-
-        JPanel buttonPanel = new JPanel(new BorderLayout());
-        buttonPanel.add(processButton, BorderLayout.NORTH);
-
-        frame.add(buttonPanel, BorderLayout.NORTH);
-        frame.add(splitPane2, BorderLayout.CENTER);
+        statusBar.setFont(new Font("Arial", Font.PLAIN, 12));
         frame.add(statusBar, BorderLayout.SOUTH);
-        frame.add(parcelFormPanel, BorderLayout.WEST);
-        frame.add(customerFormPanel, BorderLayout.EAST);
 
+        frame.add(formPanel, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
 
@@ -244,15 +273,10 @@ public class Manager {
     }
 
     private void updateStatusBar(String message) {
-        statusBar.setText(message);
+        statusBar.setText("Status: " + message);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Manager manager = new Manager();
-            manager.initializeParcels("parcels.txt");
-            manager.initializeCustomers("customers.txt");
-            manager.startProcessing();
-        });
+        SwingUtilities.invokeLater(() -> new Manager());
     }
 }
