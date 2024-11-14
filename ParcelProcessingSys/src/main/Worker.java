@@ -1,14 +1,18 @@
 package main;
 
 public class Worker {
+    // Reference to ParcelMap for accessing parcels
     private ParcelMap parcelMap;
+    // Reference to Log for recording events
     private Log log;
 
+    // Constructor to initialize ParcelMap and Log instance
     public Worker(ParcelMap parcelMap) {
         this.parcelMap = parcelMap;
         this.log = Log.getInstance();
     }
 
+    // Processes a customer's request to collect a parcel
     public void processCustomer(Customer customer) {
         String parcelID = customer.getParcelID();
         Parcel parcel = parcelMap.getParcel(parcelID);
@@ -22,6 +26,7 @@ public class Worker {
         }
     }
 
+    // Calculates the fee for a parcel based on various factors
     public double calculateFee(Parcel parcel) {
         double baseRate = 5.0;
         double weightFee = parcel.getWeight() * 0.1;
@@ -31,9 +36,9 @@ public class Worker {
         return baseRate + weightFee + sizeFee + daysFee;
     }
 
+    // Returns a string representation of the Worker
     @Override
     public String toString() {
         return "Worker processing parcels";
     }
 }
-

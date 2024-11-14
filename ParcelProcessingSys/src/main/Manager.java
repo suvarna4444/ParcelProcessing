@@ -20,6 +20,8 @@ public class Manager {
     private JButton processButton;
     private JLabel statusBar;
 
+    
+ // Constructor to initialize member variables and create GUI
     public Manager() {
         this.customerQueue = new QueueOfCustomers();
         this.parcelMap = new ParcelMap();
@@ -28,6 +30,8 @@ public class Manager {
         createGUI();
     }
 
+    
+    // Initialize parcels from a file
     public void initializeParcels(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -51,6 +55,8 @@ public class Manager {
         }
     }
 
+    
+ // Initialize customers from a file
     public void initializeCustomers(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -71,6 +77,7 @@ public class Manager {
         }
     }
 
+ // Start processing the next customer in the queue
     public void startProcessing() {
         if (!customerQueue.isEmpty()) {
             Customer customer = customerQueue.removeCustomer();
@@ -85,7 +92,10 @@ public class Manager {
         }
         log.writeLogToFile("log.txt");
     }
-
+    
+    
+    
+ // Create the GUI for the application
     private void createGUI() {
         frame = new JFrame("Parcel Depot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,6 +125,8 @@ public class Manager {
 
         frame.setJMenuBar(menuBar);
 
+        
+     // Parcel Text Area
         parcelTextArea = new JTextArea();
         parcelTextArea.setEditable(false);
         parcelTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -122,6 +134,9 @@ public class Manager {
         JScrollPane parcelScrollPane = new JScrollPane(parcelTextArea);
         parcelScrollPane.setBorder(BorderFactory.createTitledBorder("Parcels"));
 
+        
+        
+     // Customer Text Area
         customerTextArea = new JTextArea();
         customerTextArea.setEditable(false);
         customerTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -129,6 +144,9 @@ public class Manager {
         JScrollPane customerScrollPane = new JScrollPane(customerTextArea);
         customerScrollPane.setBorder(BorderFactory.createTitledBorder("Customers"));
 
+        
+        
+     // Current Parcel Text Area
         currentParcelTextArea = new JTextArea();
         currentParcelTextArea.setEditable(false);
         currentParcelTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -136,15 +154,20 @@ public class Manager {
         JScrollPane currentParcelScrollPane = new JScrollPane(currentParcelTextArea);
         currentParcelScrollPane.setBorder(BorderFactory.createTitledBorder("Current Parcel"));
 
+        
+        
+     // Split panes for organizing text areas
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, parcelScrollPane, customerScrollPane);
         splitPane1.setDividerLocation(400);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, currentParcelScrollPane);
         splitPane2.setDividerLocation(800);
 
+        
+        
+     // Process button for starting the processing of the next customer
         processButton = new JButton("Process Next Customer");
         processButton.setToolTipText("Click to process the next customer in the queue");
         processButton.setFont(new Font("Arial", Font.BOLD, 14));
-        processButton.setIcon(new ImageIcon("icons/process.png"));  // Assuming you have an icon named process.png
         processButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,6 +175,10 @@ public class Manager {
             }
         });
 
+        
+        
+
+        // Form panel for adding new parcels
         JPanel parcelFormPanel = new JPanel();
         parcelFormPanel.setLayout(new GridLayout(7, 2, 10, 10));
         parcelFormPanel.setBorder(BorderFactory.createTitledBorder("Add Parcel"));
@@ -164,7 +191,6 @@ public class Manager {
 
         JButton addParcelButton = new JButton("Add Parcel");
         addParcelButton.setFont(new Font("Arial", Font.BOLD, 14));
-        addParcelButton.setIcon(new ImageIcon("icons/add.png"));  // Assuming you have an icon named add.png
         addParcelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -215,7 +241,6 @@ public class Manager {
 
         JButton addCustomerButton = new JButton("Add Customer");
         addCustomerButton.setFont(new Font("Arial", Font.BOLD, 14));
-        addCustomerButton.setIcon(new ImageIcon("icons/add.png"));  // Assuming you have an icon named add.png
         addCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
